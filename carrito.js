@@ -208,9 +208,19 @@
       q.appendChild(minus); q.appendChild(num); q.appendChild(plus);
       left.appendChild(q);
 
+      // Con cantidad > 1 se muestra el subtotal de la línea, no el precio
+      // unitario: si no, dos brunchs de $14.900 se leían como "$14.900" al
+      // lado del "2" y el total de abajo no cuadraba con lo que se veía.
       var pr = document.createElement('div');
       pr.className = 'uc-line-price';
-      pr.textContent = line.price ? money(line.price) : 'Consultar';
+      if (!line.price) {
+        pr.textContent = 'Consultar';
+      } else if (line.qty > 1) {
+        pr.textContent = money(line.price * line.qty);
+        pr.title = money(line.price) + ' c/u';
+      } else {
+        pr.textContent = money(line.price);
+      }
 
       row.appendChild(left);
       row.appendChild(pr);

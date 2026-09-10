@@ -174,14 +174,25 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:500; line-height:1.14; }
 .menu-tab.active{ background:var(--acento); border-color:var(--acento); color:#FFFFFF; }
 .menu-panel{ display:none; } .menu-panel.active{ display:block; }
 .menu-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+/* Grid de 3 columnas (miniatura · texto · botón +) con el precio bajo la
+   descripción. En flex, la miniatura, el precio y el "+" eran tres columnas
+   más y el texto se quedaba con ~100px; así gana casi el doble de ancho.
+   Las áreas que no existen (proyectos sin miniatura o sin carrito) colapsan
+   solas porque sus pistas son "auto". */
 .menu-item{
-  display:flex; align-items:center; gap:14px; background:var(--papel);
+  display:grid; grid-template-columns:auto minmax(0,1fr) auto;
+  grid-template-areas:"thumb texto mas" "thumb precio mas";
+  align-items:center; column-gap:14px; row-gap:4px; background:var(--papel);
   border:1px solid var(--crema-osc); border-radius:var(--radio); padding:15px 18px;
 }
+.menu-item > .cf-thumb{ grid-area:thumb; }
+.menu-item > .menu-item-text{ grid-area:texto; min-width:0; }
+.menu-item > .price{ grid-area:precio; justify-self:start; }
+.menu-item > .uc-add{ grid-area:mas; }
 .menu-item .name{ font-weight:700; font-size:.98rem; color:var(--tinta); display:block; }
 .menu-item .desc{ font-size:.85rem; color:var(--tinta-suave); margin-top:3px; line-height:1.45; }
-.menu-item .price{ font-weight:800; color:var(--acento); white-space:nowrap; margin-left:auto; font-size:.9rem; }
-.menu-item-text{ flex:1; min-width:0; }
+.menu-item .price{ font-weight:800; color:var(--acento); white-space:nowrap; font-size:.9rem; }
+.menu-item-text{ min-width:0; }
 
 .resenas-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:24px; }
 .review-card{
