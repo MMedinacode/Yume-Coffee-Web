@@ -97,9 +97,13 @@ Object.keys(MENU).forEach((key, i) => {
     row.className = 'menu-item reveal';
 
     if (item.img) {
+      // La clase cf-thumb la necesita el grid de .menu-item para ubicarla en
+      // su columna; sin ella la miniatura caia fuera de las areas y abria
+      // una fila extra.
       const cont = document.createElement('div');
+      cont.className = 'cf-thumb';
       const im = document.createElement('img');
-      im.src = item.img; im.alt = item.n; im.loading = 'lazy';
+      im.src = 'fotos/' + item.img; im.alt = item.n; im.loading = 'lazy';
       im.style.cssText = 'width:58px;height:58px;object-fit:cover;border-radius:12px;';
       cont.appendChild(im);
       row.appendChild(cont);
