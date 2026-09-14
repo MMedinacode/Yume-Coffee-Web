@@ -146,6 +146,23 @@
            'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths + '</svg>';
   }
 
+  /* ---------- dónde va la pestaña ----------
+     Redes va PENÚLTIMA: Visítanos tiene que quedar siempre al final, que es
+     la que cierra el recorrido. Cada sitio le pone una clave distinta
+     (visitanos, ubicacion, contacto…), así que se busca por las dos vías. */
+  var RE_ULTIMA = /(visit|ubicac|contact|donde|encuentr)/i;
+
+  function claveUltima() {
+    var encontrada = null;
+    Array.prototype.forEach.call(document.querySelectorAll(SEL_NAV), function (l) {
+      if (encontrada) return;
+      var clave = l.getAttribute(ATTR_NAV) || '';
+      var texto = (l.textContent || '').trim();
+      if (RE_ULTIMA.test(clave) || RE_ULTIMA.test(texto)) encontrada = clave;
+    });
+    return encontrada;
+  }
+
   /* ---------- encontrar el sistema de pestañas del sitio ---------- */
   function panelModelo() {
     return document.querySelector('[data-tab-panel]') ||
@@ -175,7 +192,22 @@
     }
     if (modelo.id) panel.id = /^tab-/.test(modelo.id) ? 'tab-' + CLAVE : CLAVE;
     panel.setAttribute('data-redes-panel', '');
-    modelo.parentNode.appendChild(panel);   // al final, después de Visítanos
+
+    /* Se cuelga justo antes del panel de Visítanos para que esa quede
+       cerrando; si no se encuentra, al final como antes. */
+    var ultima = claveUltima();
+    var destino = null;
+    if (ultima) {
+      destino = document.querySelector('[data-tab-panel="' + ultima + '"]') ||
+                document.getElementById(ultima) ||
+                document.getElementById('tab-' + ultima) ||
+                document.querySelector('.tab-section[data-tab="' + ultima + '"]');
+    }
+    if (destino && destino.parentNode === modelo.parentNode) {
+      modelo.parentNode.insertBefore(panel, destino);
+    } else {
+      modelo.parentNode.appendChild(panel);
+    }
     return panel;
   }
 
@@ -187,9 +219,16 @@
     var barras = [];
     Array.prototype.forEach.call(document.querySelectorAll(SEL_NAV), function (el) {
       var p = el.parentNode;
-      if (p && barras.indexOf(p) === -1 && p.querySelectorAll(SEL_NAV).length >= 3) {
-        barras.push(p);
-      }
+      if (!p || barras.indexOf(p) !== -1) return;
+      if (p.querySelectorAll(SEL_NAV).length < 3) return;
+      /* Tiene que ser una barra de navegación de verdad. Sin esta condición,
+         en Yume el enlace se colaba en el bloque de botones del header
+         (.header-actions), que también tenía tres elementos con data-tab. */
+      var esNav = p.tagName === 'NAV' || p.tagName === 'UL' ||
+                  /nav|menu|men[uú]/i.test(String(p.className)) ||
+                  /nav|menu/i.test(String(p.id)) ||
+                  (p.closest && p.closest('nav'));
+      if (esNav) barras.push(p);
     });
     if (!barras.length && modelo.parentNode) barras.push(modelo.parentNode);
 
@@ -199,6 +238,15 @@
       var hermanos = barra.querySelectorAll(SEL_NAV);
       var ultimo = hermanos[hermanos.length - 1];
       if (!ultimo) return;
+
+      /* El enlace de Visítanos es el que tiene que quedar último. */
+      var ultima = claveUltima();
+      var anclaFinal = null;
+      if (ultima) {
+        Array.prototype.forEach.call(hermanos, function (h) {
+          if (h.getAttribute(ATTR_NAV) === ultima) anclaFinal = h;
+        });
+      }
 
       /* Clon profundo para heredar la estructura interna del sitio: varios
          numeran las pestañas con un <span> propio ("01 Inicio"), y un clon
@@ -212,7 +260,12 @@
 
       /* Se conserva el numerito si el sitio los usa, y se le pone el que toca. */
       var idx = link.querySelector('.nav-idx, [class*="idx"], [class*="num"]');
-      var idxPrevio = ultimo.querySelector('.nav-idx, [class*="idx"], [class*="num"]');
+      /* Si Redes se cuela antes de Visítanos, su número sale del que la
+         precede, no del último de la barra. */
+      var referencia = anclaFinal && anclaFinal.previousElementSibling &&
+                       anclaFinal.previousElementSibling.hasAttribute(ATTR_NAV)
+        ? anclaFinal.previousElementSibling : ultimo;
+      var idxPrevio = referencia.querySelector('.nav-idx, [class*="idx"], [class*="num"]');
       if (idx && idxPrevio && /^\s*\d+\s*$/.test(idxPrevio.textContent || '')) {
         /* Se numera a partir del último, no contando hermanos: alguna barra
            trae elementos ocultos y la cuenta salía desfasada. */
@@ -229,7 +282,16 @@
         e.preventDefault();
         alClic();
       });
-      ultimo.parentNode.insertBefore(link, ultimo.nextSibling);
+      if (anclaFinal) {
+        anclaFinal.parentNode.insertBefore(link, anclaFinal);
+        /* Visítanos se corre un número hacia adelante si el sitio los usa. */
+        var idxFinal = anclaFinal.querySelector('.nav-idx, [class*="idx"], [class*="num"]');
+        if (idx && idxFinal && /^\s*\d+\s*$/.test(idxFinal.textContent || '')) {
+          idxFinal.textContent = ('0' + (parseInt(idx.textContent, 10) + 1)).slice(-2);
+        }
+      } else {
+        ultimo.parentNode.insertBefore(link, ultimo.nextSibling);
+      }
       creados.push(link);
     });
     return creados;
@@ -466,7 +528,10 @@
     /* Si el sitio YA tiene su propia pestaña de redes, no se duplica. */
     var yaTiene = Array.prototype.some.call(
       document.querySelectorAll(SEL_NAV),
-      function (l) { return /^\s*redes\s*$/i.test(l.textContent || ''); }
+      function (l) {
+        return (l.getAttribute(ATTR_NAV) || '').toLowerCase() === CLAVE ||
+               /^\s*redes/i.test(l.textContent || '');
+      }
     );
     if (yaTiene) return;
 
