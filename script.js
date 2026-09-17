@@ -2,7 +2,7 @@
    YUME COFFEE — datos y lógica
    ============================================================
    ⚠️ SIN PRECIOS. No publican carta con precios en ningún canal. Los
-   productos listados salen de sus reseñas reales, de las palabras más
+   productos listados salen de nuestras reseñas, de las palabras más
    repetidas en su ficha, del letrero de su propia fachada ("CAFÉ DE
    ESPECIALIDAD, MATCHA & BRUNCH") y de lo que se ve en sus propias fotos.
    Ninguno inventado. Pedirle la carta al local para cargar los precios.
@@ -49,7 +49,7 @@ const MENU = {
       },
       {
         "n": "Pasteles del día",
-        "d": "\"Pasteles\" es de lo más nombrado en sus reseñas"
+        "d": "\"Pasteles\" es de lo más nombrado en nuestras reseñas"
       }
     ]
   },
