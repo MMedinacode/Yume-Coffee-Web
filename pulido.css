@@ -1,0 +1,140 @@
+/* ══════════════════════════════════════════════════════════════════════
+   PULIDO — módulo compartido de movimiento y detalle fino
+   ══════════════════════════════════════════════════════════════════════
+   Va DESPUÉS del styles.css de cada sitio, así que puede afinar lo que
+   el sitio ya definió. Deliberadamente no trae ni un color propio: todo
+   sale de currentColor o de las variables que cada proyecto ya tiene.
+   Así el mismo archivo sirve para el sitio rosado y para el verde oliva
+   sin desentonar en ninguno.
+
+   Regla de la casa: nada acá cambia dónde están las cosas, sólo cómo
+   llegan y cómo responden. Si algo se mueve, se puede apagar entero
+   desde el bloque de prefers-reduced-motion del final.
+   ══════════════════════════════════════════════════════════════════════ */
+
+:root{
+  --pl-fx: cubic-bezier(.22,.8,.3,1);
+  --pl-fx-suave: cubic-bezier(.4,0,.2,1);
+}
+
+/* ─── 1. La pestaña que entra, entra ───────────────────────────────────
+   Conviven tres convenciones en el portafolio: .tab-panel.active (la
+   primera generación), .tab-panel.on (la segunda) y .tab-section.active
+   (la invertida, la de al Cubo). Se cubren las tres. */
+.tab-panel.active, .tab-panel.on, .tab-section.active{
+  animation: plPanel .40s var(--pl-fx) both;
+}
+@keyframes plPanel{
+  from{ opacity:0; transform:translateY(9px) }
+  to  { opacity:1; transform:none }
+}
+
+/* ─── 2. Las filas de la carta entran escalonadas ──────────────────────
+   38 ms entre una y otra: suficiente para que se note la cascada, poco
+   para que nadie espere. El índice lo pone pulido.js. */
+.pl-cascada > *{
+  animation: plFila .48s var(--pl-fx) both;
+  animation-delay: calc(var(--pl-i, 0) * 38ms);
+}
+@keyframes plFila{
+  from{ opacity:0; transform:translateY(11px) }
+  to  { opacity:1; transform:none }
+}
+
+/* ─── 3. Lo que se puede tocar, se nota que se puede tocar ─────────────
+   Sin cambiar el color de nadie: sólo peso, sombra y el cursor. */
+.menu-item{ transition: transform .22s var(--pl-fx), box-shadow .22s var(--pl-fx); }
+.menu-item:hover{ transform: translateY(-2px); }
+.menu-item:active{ transform: translateY(0) scale(.995); }
+
+/* ─── 4. Los precios, en columna de verdad ─────────────────────────────
+   tabular-nums le da el mismo ancho a todos los dígitos, así el 1 ocupa
+   lo mismo que el 8 y la columna de precios queda alineada de arriba
+   abajo. Es el detalle que separa una carta prolija de una que baila. */
+.price, .menu-item-price, .menu-price, .cf-price, .carta-precio,
+.uc-precio, .uc-total, .precio{
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ─── 5. Los títulos no se parten mal ──────────────────────────────────
+   text-wrap:balance reparte las palabras entre las líneas en vez de
+   dejar una sola colgando abajo. Una línea de CSS, y los títulos de dos
+   líneas dejan de verse descuidados. */
+h1, h2, h3, .hero-title, .sec-head h2{ text-wrap: balance; }
+p.sec-lead, .hero-sub, .lead{ text-wrap: pretty; }
+
+/* ─── 6. Foco visible en todo lo que recibe teclado ────────────────────
+   currentColor hace que el anillo salga del color del propio elemento,
+   así nunca choca con la paleta del sitio. */
+a:focus-visible, button:focus-visible, summary:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible{
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 7px;
+}
+
+/* ─── 7. La cabecera se despega al bajar ───────────────────────────────
+   Mientras estás arriba del todo no hay sombra; apenas bajas, la barra
+   se separa del contenido. La clase la pone pulido.js en el <html>. */
+.pl-abajo .head, .pl-abajo .site-head, .pl-abajo .topbar,
+.pl-abajo header[class*="head"]{
+  box-shadow: 0 8px 26px -18px rgba(0,0,0,.55);
+  transition: box-shadow .3s var(--pl-fx-suave);
+}
+
+/* ─── 8. Las fotos respiran al pasar por encima ────────────────────────
+   El marco recorta y la foto crece dentro: el encuadre no se mueve. */
+.pl-zoom{ overflow: hidden; }
+.pl-zoom img{ transition: transform .62s var(--pl-fx-suave); will-change: transform; }
+.pl-zoom:hover img, .pl-zoom:focus-within img{ transform: scale(1.05); }
+
+/* ─── 9. Los botones responden al dedo ─────────────────────────────────
+   Se excluyen los flotantes y los de pestaña, que ya tienen lo suyo. */
+button:not(.flot):not([class*="flot"]):not([class*="tab"]):not([class*="nav"]):active{
+  transform: scale(.975);
+}
+button{ transition: transform .12s var(--pl-fx); }
+
+/* ─── 10. El enlace de navegación activo, subrayado que crece ──────────
+   Sólo se dibuja si el sitio no tenía ya un ::after propio ahí. */
+.nav-links a, .nav-link{ position: relative; }
+.nav-links a:not(.active):not(.on)::before,
+.nav-link:not(.active):not(.on)::before{
+  content: ""; position: absolute; left: 12px; right: 12px; bottom: 6px;
+  height: 1.5px; background: currentColor; border-radius: 2px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .28s var(--pl-fx); opacity: .55;
+}
+.nav-links a:hover::before, .nav-link:hover::before{ transform: scaleX(1); }
+
+/* ─── 11. Las tarjetas se levantan ─────────────────────────────────────
+   Sin tocar su sombra propia: sólo suman traslación. */
+.red-card, .resena, .review-card, .info-card, .split-card{
+  transition: transform .26s var(--pl-fx);
+}
+.red-card:hover, .resena:hover, .review-card:hover{ transform: translateY(-3px); }
+
+/* ─── 12. El número de la reseña, cuando cuenta solo ───────────────────
+   pulido.js le sube el valor; acá sólo se le fija el ancho para que el
+   texto de al lado no vaya saltando mientras el número corre. */
+.pl-contando{ font-variant-numeric: tabular-nums; }
+
+/* ─── 13. Los paneles que no se ven, no se pintan ──────────────────────
+   content-visibility le dice al navegador que no calcule el interior de
+   una pestaña cerrada. En una carta de 200 filas se nota al abrir. */
+.tab-panel:not(.active):not(.on), .tab-section:not(.active){
+  content-visibility: auto;
+}
+
+/* ─── 14. Nadie se marea ───────────────────────────────────────────────
+   Quien pidió menos movimiento en su sistema no recibe ninguno. */
+@media (prefers-reduced-motion: reduce){
+  .tab-panel.active, .tab-panel.on, .tab-section.active,
+  .pl-cascada > *{ animation: none !important; }
+  .menu-item, .menu-item:hover, .menu-item:active,
+  .red-card:hover, .resena:hover, .review-card:hover,
+  .pl-zoom:hover img, button:active{ transform: none !important; }
+  .nav-links a::before, .nav-link::before{ display: none; }
+  *{ scroll-behavior: auto !important; }
+}

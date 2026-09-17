@@ -38,7 +38,7 @@
   - Atributos de su ficha: "Amigable con LGBTQ+" y "Se identifica como mujer empresaria".
   - Instagram real: @yumecafeteria
   - Letrero de su propia fachada: "CAFÉ DE ESPECIALIDAD, MATCHA & BRUNCH".
-  - 3 reseñas reales con nombre.
+  - 3 reseñas con nombre.
   - Fotos: fotos propias del local publicadas en su ficha de Google.
   - Publicación de un visitante en su ficha: "El mejor matcha que he probado".
 
@@ -58,6 +58,38 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="pulido.css">
+
+<!-- ══════════════════════════════════════════════════════════════
+     Datos estructurados (schema.org)
+     ══════════════════════════════════════════════════════════════
+     Esto no se ve en la página: lo lee Google. Le dice que acá hay
+     un negocio con nombre, dirección, teléfono y horario, en vez de
+     un texto cualquiera. Es lo que permite salir como ficha y no
+     sólo como un resultado más.
+
+     Todo lo de abajo ya está publicado en esta misma página. Si un
+     dato no estaba, el campo simplemente no aparece. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CafeOrCoffeeShop",
+  "name": "YUME coffee",
+  "description": "YUME coffee — café de especialidad, matcha y brunch en Av. Calera de Tango paradero 7. 5.0★ con 104 opiniones en Google.",
+  "image": "https://mmedinacode.github.io/Yume-Coffee-Web/fotos/mesa.jpg",
+  "url": "https://mmedinacode.github.io/Yume-Coffee-Web/",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "CL",
+    "streetAddress": "Av. Calera de Tango, paradero 7",
+    "addressLocality": "Calera de Tango",
+    "addressRegion": "Región Metropolitana"
+  },
+  "sameAs": [
+    "https://instagram.com/yumecafeteria"
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -131,12 +163,12 @@
         <article class="info-card reveal">
           <div class="pilar-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h12v6a6 6 0 0 1-6 6h0a6 6 0 0 1-6-6z"/><path d="M17 11h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M8 5c0-1.5 1-1.5 1-3M12 5c0-1.5 1-1.5 1-3"/></svg></div>
           <h3>El matcha de la casa</h3>
-          <p>"El mejor matcha que he probado" — es lo que dejó escrito un visitante en su ficha de Google, y matcha es una de sus palabras más repetidas.</p>
+          <p>"El mejor matcha que he probado" — lo dejó escrito un cliente en Google, y el matcha es una de nuestras palabras más repetidas.</p>
         </article>
         <article class="info-card reveal">
           <div class="pilar-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h16v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13c0-3 4-5 8-5s8 2 8 5"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="11" r="1"/></svg></div>
           <h3>Café de especialidad y pastelería</h3>
-          <p>Café de especialidad y pasteles son los dos temas que más aparecen en sus reseñas. Tartaletas de pistacho y frambuesa, croissants, ciabattas.</p>
+          <p>Café de especialidad y pasteles son los dos temas que más aparecen en nuestras reseñas. Tartaletas de pistacho y frambuesa, croissants, ciabattas.</p>
         </article>
         <article class="info-card reveal">
           <div class="pilar-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><rect x="8" y="6" width="8" height="5" rx="1"/><circle cx="9.5" cy="15" r="1.2"/><circle cx="14.5" cy="15" r="1.2"/></svg></div>
@@ -178,7 +210,7 @@
             <span class="badge">Amigable con LGBTQ+</span>
             <span class="badge">Emprendimiento de mujer</span>
           </div>
-          <p class="nota-fuente">Los distintivos de LGBTQ+ y emprendimiento de mujer son los que la propia ficha de Google le reconoce al local.</p>
+          <p class="nota-fuente">Somos un lugar amigable con LGBTQ+ y un emprendimiento de mujer.</p>
         </div>
         <div class="nosotros-fotos reveal">
           <figure class="foto-grande">
@@ -272,7 +304,7 @@
             <ul class="horario-semana horario-parcial">
               <li><span class="hs-dia">Cierra a las 20:45</span></li>
             </ul>
-            <p class="info-sub info-porconfirmar">Horario completo por confirmar con el local.</p>
+            
           </div>
 
           <div class="info-bloque">
@@ -333,5 +365,6 @@
 <script>window.REDES={"intro": "El mejor promedio del portafolio con volumen real: 5.0 con 104 opiniones. Instagram es su único canal.", "instagram": {"user": "yumecafeteria", "nota": "No publican teléfono: el contacto va por aca.", "fotos": ["fotos/capuchino.jpg", "fotos/ciabatta.jpg", "fotos/fachada.jpg"]}};</script>
 <script src="redes.js"></script>
 <script src="flotantes.js"></script>
+<script src="pulido.js"></script>
 </body>
 </html>
