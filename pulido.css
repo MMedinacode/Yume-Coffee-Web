@@ -138,3 +138,16 @@ button{ transition: transform .12s var(--pl-fx); }
   .nav-links a::before, .nav-link::before{ display: none; }
   *{ scroll-behavior: auto !important; }
 }
+
+
+/* ─── 15. El día con horario especial, marcado en la tabla ─────────────
+   horario.js pone .hs-especial en cualquier día que tenga una excepción
+   por fecha (un feriado, un cierre puntual). Sin esto el 10:00 a 18:00
+   del 18 se lee como si fuera el horario de siempre. currentColor para
+   no traer un color ajeno a la paleta de cada sitio. */
+.hs-especial{ font-weight:700; }
+.hs-especial::after{
+  content:" · sólo esta fecha";
+  font-weight:400; font-size:.82em; opacity:.62; white-space:nowrap;
+}
+@media (max-width:420px){ .hs-especial::after{ content:" · especial"; } }
